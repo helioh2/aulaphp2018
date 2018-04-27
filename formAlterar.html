@@ -1,0 +1,91 @@
+
+
+<html>
+    <head>
+        <title>Alterando</title>        
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <script src="http://www.w3schools.com/lib/w3data.js"></script>
+        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    </head>
+    <body onload="carregaDadosCliente()">
+        <div w3-include-html="menu.html"></div> 
+        <h2></h2>
+        <div class="container">
+            <div class="panel panel-default">
+                <div class="panel panel-heading">
+                    <strong>Alterando Cliente</strong>
+                </div>
+                <div class="panel panel-body">
+                    <form action="backend/gravar.php" method="POST">
+                        <input type="hidden" name="id" id="id" />
+                        
+                        <div class="form-group">
+                            <label for="nome">Nome:</label>
+                            <input class="form-control" type="text" name="nome" id="nome" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="idade">Idade:</label>
+                            <input class="form-control" type="number" name="idade" id="idade" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="sexo">Sexo:</label>
+                            <input class="form-control" type="text" maxlength="1" name="sexo" id="sexo" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="dataNascimento">Data de Nascimento:</label>
+                            <input class="form-control" type="date" name="dataNascimento" id="dataNascimento" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address:</label>
+                            <input class="form-control" type="email" name="email" id="email" required="true"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="endereco">Endereço:</label>
+                            <input class="form-control" type="text" name="endereco" id="endereco" required="true"/>
+                        </div>
+                        
+                        <div class="text-right">
+                            <a href='index.html' class="btn btn-danger">Cancelar</a>
+                            <input type="submit" value="Gravar" class="btn btn-success"/>
+                        </div>
+                    </form> 	
+                </div>
+            </div>
+        </div>
+
+        
+        <script>
+            function getUrlParameter(name) {
+                name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+                var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+                var results = regex.exec(location.search);
+                return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+            };
+
+            function carregaDadosCliente() {
+                var id = getUrlParameter('id');
+                $("#id").val(id);
+                var url=`backend/cliente.php?id=${id}`;
+                $.ajax({
+                    url: url,
+                    cache: false,
+                    dataType: "json",                   
+                    success: function(retorno) {
+                        if (retorno.erro) {
+                            $("h2").html(retorno.erro);
+                        } else {
+                            $("#nome").val(retorno.nome);
+                            $("#idade").val(retorno.idade);
+                            $("#sexo").val(retorno.sexo);
+                            $("#dataNascimento").val(retorno.dataNascimento);
+                            $("#email").val(retorno.email);
+                            $("#endereco").val(retorno.endereco);
+                        }
+
+                    }
+                });
+            }
+        </script>
+
+    </body>
+</html>
