@@ -15,9 +15,14 @@ $sql = "UPDATE cliente SET
 	email='$email',endereco='$endereco' 
 	WHERE id=$id;";
 		
-$alterar = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
+$gravar = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
 
-echo $alterar;		
+
+if ($gravar) {
+    header("location:index.php");
+}else{
+    echo $gravar;		
+}
 
 
 

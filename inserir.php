@@ -1,4 +1,6 @@
 <?php
+
+include './verificaLogin.php';
 include('conexao.php');
 
 $nome = $_POST['nome'];
@@ -13,11 +15,11 @@ $sql = "INSERT INTO cliente(id, nome, idade, sexo,
 		dataNascimento, email, endereco) VALUES 
 		(null,'$nome',$idade,'$sexo','$dataNascimento',
 		'$email','$endereco');";
-		
-$grava = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
 
-echo $grava;		
+$inserir = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
 
-
-
-?>
+if ($inserir) {
+    header("location:index.php");
+} else {
+    echo $grava;
+}
