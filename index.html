@@ -3,10 +3,11 @@
         <title>Listar Clientes</title>        
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <script src="http://www.w3schools.com/lib/w3data.js"></script>
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
-        <script src="itens.js"></script>
+        <!-- <script src="./node_modules/jquery/dist/jquery.min.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <!-- <script src="itens.js"></script> -->
     </head>
-    <body onload="carregarItens()" >
+    <body ng-app="clientes" ng-controller="listarCtrl">
         <div w3-include-html="menu.html"></div> 
         <div class="container">
             <div class="panel panel-default">
@@ -27,8 +28,20 @@
                             <th>endereco</th>
                             <th><a href='formInserir.html' class="btn btn-success    ">Inserir</a></th>
                         </thead>
-
                         <tbody>
+                            <tr ng-repeat="x in clientes">
+                                <td>{{ x.id }}</td>
+                                <td>{{ x.nome }}</td>
+                                <td>{{ x.idade }}</td>
+                                <td>{{ x.sexo }}</td>
+                                <td>{{ x.dataNascimento }}</td>
+                                <td>{{ x.email }}</td>
+                                <td>{{ x.endereco }}</td>
+                                <td>
+                                    <a href='backend/deletar.php?id={{ x.id }}' class='btn btn-danger'>Deletar</a> 
+                                    <a href='formAlterar.html?id={{ x.id }}' class='btn btn-primary'>Alterar</a> 
+                                </td>
+                            </tr>
                         </tbody>                 
 
                     </table>
@@ -36,6 +49,17 @@
             </div>
         </div>
     </body>
+    <script>
+        var app = angular.module('clientes', []);
+        app.controller('listarCtrl', function($scope, $http) {
+            $http.get("backend/listar.php")
+            .then(function success(response) {
+                $scope.clientes = response.data
+            }, function error(response) {
+                window.location.replace("login.html");
+            });
+        });
+    </script>
 </html>
 
 
