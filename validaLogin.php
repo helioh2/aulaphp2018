@@ -24,7 +24,7 @@ session_start();
 if ($result > 0) {
     $_SESSION['login'] = $login;
     $_SESSION['senha'] = $senha;
-    header("location:index.php");
+    header("location:index.html");
 } else {
     include './logoff.php';
 }
