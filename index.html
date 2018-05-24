@@ -3,10 +3,11 @@
         <title>Listar Clientes</title>        
         <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <script src="http://www.w3schools.com/lib/w3data.js"></script>
-        <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+        <!-- <script src="./node_modules/jquery/dist/jquery.min.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
         <script src="itens.js"></script>
     </head>
-    <body onload="carregarItens()" >
+    <body ng-app="listarClientes" ng-controller="clientesCtrl">
         <div w3-include-html="menu.html"></div> 
         <div class="container">
             <div class="panel panel-default">
@@ -29,12 +30,64 @@
                         </thead>
 
                         <tbody>
+                           <tr ng-repeat="c in clientes">
+                               <td>{{ c.id  }}</td>
+                               <td>{{ c.nome  }}</td>
+                               <td>{{ c.idade  }}</td>
+                               <td>{{ c.sexo  }}</td>
+                               <td>{{ c.dataNascimento  }}</td>
+                               <td>{{ c.email  }}</td>
+                               <td>{{ c.endereco  }}</td>
+                               <td>
+                                <a href='backend/deletar.php?id={{c.id}}' class='btn btn-danger'>Deletar</a> 
+                               </td>
+                               <td>
+                                <a href='formAlterar.html?id={{c.id}}' class='btn btn-primary'>Alterar</a> 
+                                </td>
+                           </tr>
                         </tbody>                 
 
                     </table>
                 </div>
             </div>
         </div>
+    <script>
+    var app = angular.module("listarClientes", []);
+    app.controller("clientesCtrl", function($scope, $http) {
+        
+        $http.get("/backend/listar.php").
+            then( function(response) {
+                $scope.clientes = response.data;
+            })
+
+
+        // var cliente1 = {
+        //         id:15, 
+        //         nome:"Fulano", 
+        //         idade:50, 
+        //         sexo:"M", 
+        //         dataNascimento: '1968-01-01',
+        //         email:'fulano@uol',
+        //         endereco:'sdkajshdjk' 
+        //     }
+        
+        // var cliente2 = {
+        //         id:16, 
+        //         nome:"Beltrana", 
+        //         idade:55, 
+        //         sexo:"F", 
+        //         dataNascimento: '1963-01-01',
+        //         email:'beltrana@uol',
+        //         endereco:'sdkajshdasdasdjk' 
+        //     }
+        
+        // $scope.clientes = [cliente1, cliente2]
+
+
+
+    })
+    
+    </script>    
     </body>
 </html>
 
