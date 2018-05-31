@@ -38,7 +38,7 @@
                                 <td>{{ x.email }}</td>
                                 <td>{{ x.endereco }}</td>
                                 <td>
-                                    <a href='backend/deletar.php?id={{ x.id }}' class='btn btn-danger'>Deletar</a> 
+                                    <a href='{{clientes.deletar(x)}}' class='btn btn-danger'>Deletar</a> 
                                     <a href='formAlterar.html?id={{ x.id }}' class='btn btn-primary'>Alterar</a> 
                                 </td>
                             </tr>
@@ -52,12 +52,21 @@
     <script>
         var app = angular.module('clientes', []);
         app.controller('listarCtrl', function($scope, $http) {
-            $http.get("backend/listar.php")
+            $http.get("/api/clientes")
             .then(function success(response) {
                 $scope.clientes = response.data
             }, function error(response) {
                 window.location.replace("login.html");
             });
+
+            $scope.deletar = function(cliente) {
+                $http.delete(`/api/clientes/${cliente.id}`)
+                .then(function success(response) {
+                    $scope.clientes = clientes.filter(function(id) {
+                        return cliente.id !== id;
+                    })
+                })
+            }
         });
     </script>
 </html>
