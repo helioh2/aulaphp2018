@@ -1,25 +1,22 @@
 <?php
 
-include './verificaLogin.php';
-include('conexao.php');
+include 'verificaLogin.php';
+include 'conexao.php';
 
-$nome = $_POST['nome'];
-$idade = $_POST['idade'];
-$sexo = $_POST['sexo'];
-$dataNascimento = $_POST['dataNascimento'];
-$email = $_POST['email'];
-$endereco = $_POST['endereco'];
-
+$cliente = json_decode(file_get_contents("php://input"));
 
 $sql = "INSERT INTO cliente(id, nome, idade, sexo, 
 		dataNascimento, email, endereco) VALUES 
-		(null,'$nome',$idade,'$sexo','$dataNascimento',
-		'$email','$endereco');";
+		(null,'$cliente->nome',$cliente->idade,'$cliente->sexo',
+		'$cliente->dataNascimento',
+		'$cliente->email','$cliente->endereco');";
 
-$inserir = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
+$inserir =  mysqli_query($conexao, $sql);
 
 if ($inserir) {
-    header("location:../index.html");
+	error_log(mysqli_error($conexao));
+    echo "{}";
 } else {
-    echo $grava;
+	error_log(mysqli_error($conexao));
+	echo "{'erro': 'Ocorreu um erro ao alterar'}";	
 }

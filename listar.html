@@ -1,0 +1,42 @@
+<!-- <body ng-app="clientes" ng-controller="listarCtrl"> -->
+    <div w3-include-html="menu.html"></div> 
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel panel-heading">
+                <strong>Lista de Clientes</strong>
+            </div>
+            <h2></h2>
+            <div class="panel panel-body">
+                <table id="tabClientes" class="table table-condensed table-striped">
+                    
+                    <thead class="text-center">
+                        <th>id</th>
+                        <th>nome</th>
+                        <th>idade</th>
+                        <th>sexo</th>
+                        <th>data nascimento</th>
+                        <th>email</th>
+                        <th>endereco</th>
+                        <th><a href="#!inserir" class="btn btn-success">Inserir</a></th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in clientes">
+                            <td>{{ x.id }}</td>
+                            <td>{{ x.nome }}</td>
+                            <td>{{ x.idade }}</td>
+                            <td>{{ x.sexo }}</td>
+                            <td>{{ x.dataNascimento }}</td>
+                            <td>{{ x.email }}</td>
+                            <td>{{ x.endereco }}</td>
+                            <td>
+                                <a href="" ng-click='delete(x.id)' class='btn btn-danger'>Deletar</a> 
+                                <a ng-href="#!alterar/{{x.id}}" class='btn btn-primary'>Alterar</a> 
+                            </td>
+                        </tr>
+                    </tbody>                 
+
+                </table>
+            </div>
+        </div>
+    </div>
+<!-- </body> -->

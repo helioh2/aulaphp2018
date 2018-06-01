@@ -5,61 +5,132 @@
         <script src="http://www.w3schools.com/lib/w3data.js"></script>
         <!-- <script src="./node_modules/jquery/dist/jquery.min.js"></script> -->
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
         <!-- <script src="itens.js"></script> -->
     </head>
-    <body ng-app="clientes" ng-controller="listarCtrl">
-        <div w3-include-html="menu.html"></div> 
-        <div class="container">
-            <div class="panel panel-default">
-                <div class="panel panel-heading">
-                    <strong>Lista de Clientes</strong>
-                </div>
-                <h2></h2>
-                <div class="panel panel-body">
-                    <table id="tabClientes" class="table table-condensed table-striped">
-                        
-                        <thead class="text-center">
-                            <th>id</th>
-                            <th>nome</th>
-                            <th>idade</th>
-                            <th>sexo</th>
-                            <th>data nascimento</th>
-                            <th>email</th>
-                            <th>endereco</th>
-                            <th><a href='formInserir.html' class="btn btn-success    ">Inserir</a></th>
-                        </thead>
-                        <tbody>
-                            <tr ng-repeat="x in clientes">
-                                <td>{{ x.id }}</td>
-                                <td>{{ x.nome }}</td>
-                                <td>{{ x.idade }}</td>
-                                <td>{{ x.sexo }}</td>
-                                <td>{{ x.dataNascimento }}</td>
-                                <td>{{ x.email }}</td>
-                                <td>{{ x.endereco }}</td>
-                                <td>
-                                    <a href='backend/deletar.php?id={{ x.id }}' class='btn btn-danger'>Deletar</a> 
-                                    <a href='formAlterar.html?id={{ x.id }}' class='btn btn-primary'>Alterar</a> 
-                                </td>
-                            </tr>
-                        </tbody>                 
+   
+    <body ng-app="clientesApp">
 
-                    </table>
-                </div>
+        <div class="row">
+            <div class="col-md-12">
+                <nav class="navbar navbar-default ">
+                    <div class="navbar-header">
+                        <h3 class="text-muted"><strong>Cadastro de Clientes</strong></h3>
+                    </div>                        
+                    <div class="text-right">
+                        <a href="backend/logoff.php" ><span class="glyphicon glyphicon-off"></span></a>
+                    </div>
+                </nav>
             </div>
         </div>
-    </body>
-    <script>
-        var app = angular.module('clientes', []);
-        app.controller('listarCtrl', function($scope, $http) {
-            $http.get("backend/listar.php")
-            .then(function success(response) {
-                $scope.clientes = response.data
-            }, function error(response) {
-                window.location.replace("login.html");
+
+        <p><a href="/">Main</a></p>
+
+        <ng-view></ng-view>
+
+        <script>
+            var app = angular.module('clientesApp', ["ngRoute"]);
+
+            app.config(function($routeProvider) {
+                $routeProvider
+                .when("/", {
+                    templateUrl: "listar.html",
+                    controller: "listarCtrl"
+                })
+                .when("/alterar/:id", {
+                    templateUrl: "formAlterar.html",
+                    controller: "alterarCtrl"
+                })
+                .when("/inserir", {
+                    templateUrl: "formAlterar.html",
+                    controller: "inserirCtrl"
+                });
+            })
+
+            app.controller('listarCtrl', function($scope, $http, $interval) {
+                
+                //FUNCAO QUE ATUALIZA LISTA
+                $scope.refresh = function() {
+                    $http.get("backend/listar.php")
+                    .then(function success(response) {
+                        $scope.clientes = response.data
+                    }, function error(response) {
+                        window.location.replace("login.html");
+                    });
+                }
+                
+                $scope.delete = function(id) {
+                    $http.get("backend/deletar.php", 
+                                { params: { id: id } })
+                    .then(function success(response) {
+                        $scope.clientes = $scope.clientes.filter(
+                            (item) => item.id != id
+                        )
+                    });
+                }
+
+                $scope.refresh()
+
+                //ATUALIZA A CADA 2 SEGUNDOS
+                $interval(function () {
+                    $scope.refresh()
+                }, 2000);
+                
             });
-        });
-    </script>
+
+            app.controller('alterarCtrl', function($scope, $http, 
+                                                $routeParams, $location) {
+                
+                //FUNÇÕES PARA CONVERSÃO DE TIPOS                                    
+                $scope.fixTypes = function() {
+                    $scope.cliente.idade = parseInt($scope.cliente.idade)
+                    $scope.cliente.dataNascimento = new Date($scope.cliente.dataNascimento)
+                                                   
+                }
+                $scope.fixDateForBackend = function() {
+                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
+                                                    .toISOString().slice(0,10);
+                }
+              
+                //CARREGA CLIENTE AO ENTRAR NO FORM
+                $http.get("backend/cliente.php",
+                            { params: { id: $routeParams.id } })
+                .then(function success(response) {                  
+                    $scope.cliente = response.data
+                    $scope.fixTypes();
+                }, function error(response) {
+                    window.location.replace("login.html");
+                });
+                
+                //FUNÇÃO DE SUBMETER FORM
+                $scope.submitForm = function() {
+                    $scope.fixDateForBackend()
+                    $http.post("backend/gravar.php", $scope.cliente).
+                    then(function success(response) {
+                        $location.path("/")
+                    });
+                }
+            });
+
+            app.controller('inserirCtrl', function($scope, $http, $location) {
+                
+                $scope.fixDateForBackend = function() {
+                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
+                                                .toISOString().slice(0,10);
+                }
+
+                $scope.submitForm = function() {
+                    $scope.fixDateForBackend()
+                    $http.post("backend/inserir.php", $scope.cliente).
+                    then(function success(response) {
+                        $location.path("/")
+                    });
+                }
+            });
+
+            
+        </script>
+    </body>
 </html>
 
 

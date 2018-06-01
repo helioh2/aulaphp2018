@@ -1,29 +1,24 @@
 <?php
 include('conexao.php');
 
-$id = $_POST['id'];
-$nome = $_POST['nome'];
-$idade = $_POST['idade'];
-$sexo = $_POST['sexo'];
-$dataNascimento = $_POST['dataNascimento'];
-$email = $_POST['email'];
-$endereco = $_POST['endereco'];
-
+$cliente = json_decode(file_get_contents("php://input"));
 
 $sql = "UPDATE cliente SET 
-	nome= '$nome' ,idade=$idade,sexo='$sexo',dataNascimento='$dataNascimento',
-	email='$email',endereco='$endereco' 
-	WHERE id=$id;";
-		
-$gravar = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
+	nome= '$cliente->nome' ,idade=$cliente->idade,sexo='$cliente->sexo',dataNascimento='$cliente->dataNascimento',
+	email='$cliente->email',endereco='$cliente->endereco' 
+	WHERE id=$cliente->id;";
 
+error_log($sql);
+
+$gravar = mysqli_query($conexao, $sql);
 
 if ($gravar) {
-    header("location:../index.html");
-}else{
-    echo $gravar;		
+	error_log(mysqli_error($conexao));
+    echo "{}";
+} else {
+	error_log(mysqli_error($conexao));
+    echo "{'erro': 'Ocorreu um erro ao alterar'}";		
 }
-
 
 
 ?>
