@@ -51,21 +51,23 @@
                 
                 //FUNCAO QUE ATUALIZA LISTA
                 $scope.refresh = function() {
-                    $http.get("backend/listar.php")
+                    $http.get("/clientes")
                     .then(function success(response) {
                         $scope.clientes = response.data
                     }, function error(response) {
-                        window.location.replace("login.html");
+                        $scope.clientes = [{nome: "Erro"}]
                     });
                 }
                 
                 $scope.delete = function(id) {
-                    $http.get("backend/deletar.php", 
+                    $http.delete("/clientes/"+id, 
                                 { params: { id: id } })
                     .then(function success(response) {
+                        alert("chegou")
                         $scope.clientes = $scope.clientes.filter(
                             (item) => item.id != id
                         )
+                        alert($scope.clientes)
                     });
                 }
 
@@ -93,19 +95,19 @@
                 }
               
                 //CARREGA CLIENTE AO ENTRAR NO FORM
-                $http.get("backend/cliente.php",
-                            { params: { id: $routeParams.id } })
-                .then(function success(response) {                  
-                    $scope.cliente = response.data
+                $http.get("/clientes/"+$routeParams.id)
+                .then(function success(response) {                
+                    $scope.cliente = response.data[0]
                     $scope.fixTypes();
                 }, function error(response) {
-                    window.location.replace("login.html");
+                    $scope.cliente = {nome: "Erro"}
                 });
                 
                 //FUNÇÃO DE SUBMETER FORM
                 $scope.submitForm = function() {
                     $scope.fixDateForBackend()
-                    $http.post("backend/gravar.php", $scope.cliente).
+                    $http.put("/clientes/"+$scope.cliente._id,
+                                        $scope.cliente).
                     then(function success(response) {
                         $location.path("/")
                     });
@@ -121,7 +123,7 @@
 
                 $scope.submitForm = function() {
                     $scope.fixDateForBackend()
-                    $http.post("backend/inserir.php", $scope.cliente).
+                    $http.post("/clientes", $scope.cliente).
                     then(function success(response) {
                         $location.path("/")
                     });

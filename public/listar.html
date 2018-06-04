@@ -1,5 +1,4 @@
 <!-- <body ng-app="clientes" ng-controller="listarCtrl"> -->
-    <div w3-include-html="menu.html"></div> 
     <div class="container">
         <div class="panel panel-default">
             <div class="panel panel-heading">
@@ -8,9 +7,12 @@
             <h2></h2>
             <div class="panel panel-body">
                 <table id="tabClientes" class="table table-condensed table-striped">
-                    
+                    <label>Qualquer: <input ng-model="busca.$"></label> <br>
+                    <label>Apenas nome: <input ng-model="busca.nome"></label><br>
+                    <label>Apenas endereço: <input ng-model="busca.endereco"></label><br>
+                    <label>Apenas email: <input ng-model="busca.email"></label><br>
+                    <label>Totalmente igual? <input type="checkbox" ng-model="strict"></label><br>
                     <thead class="text-center">
-                        <th>id</th>
                         <th>nome</th>
                         <th>idade</th>
                         <th>sexo</th>
@@ -20,8 +22,7 @@
                         <th><a href="#!inserir" class="btn btn-success">Inserir</a></th>
                     </thead>
                     <tbody>
-                        <tr ng-repeat="x in clientes">
-                            <td>{{ x.id }}</td>
+                        <tr ng-repeat="x in clientes | filter:busca:strict">
                             <td>{{ x.nome }}</td>
                             <td>{{ x.idade }}</td>
                             <td>{{ x.sexo }}</td>
@@ -29,8 +30,8 @@
                             <td>{{ x.email }}</td>
                             <td>{{ x.endereco }}</td>
                             <td>
-                                <a href="" ng-click='delete(x.id)' class='btn btn-danger'>Deletar</a> 
-                                <a ng-href="#!alterar/{{x.id}}" class='btn btn-primary'>Alterar</a> 
+                                <a href="" ng-click='delete(x._id)' class='btn btn-danger'>Deletar</a> 
+                                <a ng-href="#!alterar/{{x._id}}" class='btn btn-primary'>Alterar</a> 
                             </td>
                         </tr>
                     </tbody>                 
