@@ -51,15 +51,27 @@
                 </div>
             </div>
         </div>
-    <script>
-    var app = angular.module("listarClientes", []);
-    app.controller("clientesCtrl", function($scope, $http) {
-        
-        $http.get("/backend/listar.php").
-            then( function(response) {
-                $scope.clientes = response.data;
-            })
 
+        <button ng-click="mudaPrimeiroNome()">Mudar primeiro nome</button>
+    <script>
+
+    var app = angular.module("listarClientes", []);
+    app.controller("clientesCtrl", function($scope, $http, $interval) {
+        
+        $scope.atualiza = function(){
+            $http.get("/backend/listar.php").
+                then( function(response) {  //função callback
+                    $scope.clientes = response.data;
+                })
+            }
+
+        $scope.atualiza();
+
+        $interval(function () {
+            $scope.atualiza();
+        }, 10000);
+
+        
 
         // var cliente1 = {
         //         id:15, 
@@ -69,7 +81,7 @@
         //         dataNascimento: '1968-01-01',
         //         email:'fulano@uol',
         //         endereco:'sdkajshdjk' 
-        //     }
+        //     };
         
         // var cliente2 = {
         //         id:16, 
@@ -79,13 +91,19 @@
         //         dataNascimento: '1963-01-01',
         //         email:'beltrana@uol',
         //         endereco:'sdkajshdasdasdjk' 
-        //     }
+        //     };
         
-        // $scope.clientes = [cliente1, cliente2]
+        // $scope.clientes = [cliente1, cliente2];
+
+        // $scope.mudaPrimeiroNome = function() {
+        //     cliente1 = $scope.clientes[0];
+        //     cliente1.nome = "Ciclano";
+        //     $scope.clientes[0] = cliente1; 
+
+        // };
 
 
-
-    })
+    });
     
     </script>    
     </body>
