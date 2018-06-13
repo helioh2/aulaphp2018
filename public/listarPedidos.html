@@ -1,0 +1,34 @@
+<!-- <body ng-app="clientes" ng-controller="listarCtrl"> -->
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel panel-heading">
+                <strong>Lista de Pedidos para Cliente {{ cliente.nome }}</strong>
+            </div>
+            <h2></h2>
+            <div class="panel panel-body">
+                <table id="tabPedidos" class="table table-condensed table-striped">
+                    <label>Busca: <input ng-model="busca.$"></label> <br>
+                    <label>Totalmente igual? <input type="checkbox" ng-model="strict"></label><br>
+                    <thead class="text-center">
+                        <th>Nome do Item</th>
+                        <th>Quantidade</th>
+                        <th>Frete</th>
+                        <th><a href="#!novoPedido/{{cliente._id}}" class="btn btn-success">Inserir</a></th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="x in pedidos | filter:busca:strict">
+                            <td>{{ x.item.nome }}</td>
+                            <td>{{ x.quantidade }}</td>
+                            <td>{{ x.frete }}</td>
+                            <td>
+                                <a href="" ng-click='deletePedido(x._id)' class='btn btn-danger'>Deletar</a> 
+                                <a ng-href="#!alterarPedido/{{x._id}}" class='btn btn-primary'>Alterar</a> 
+                            </td>
+                        </tr>
+                    </tbody>                 
+
+                </table>
+            </div>
+        </div>
+    </div>
+<!-- </body> -->

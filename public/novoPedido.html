@@ -1,0 +1,31 @@
+<div w3-include-html="menu.html"></div> 
+<h2></h2>
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel panel-heading">
+            <strong>Novo Pedido</strong>
+        </div>
+        <div class="panel panel-body">
+            
+            <table id="tabPedidos" class="table table-condensed table-striped">
+                <label>Busca: <input ng-model="busca.$"></label> <br>
+                <label>Totalmente igual? <input type="checkbox" ng-model="strict"></label><br>
+                <thead class="text-center">
+                    <th>Nome do Item</th>
+                    <th>Preço unitário</th>
+                    <th><a ng-href="#!novoPedido/{{cliente._id}}" class="btn btn-success">Inserir</a></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="x in itens | filter:busca:strict">
+                        <td>{{ x.nome }}</td>
+                        <td>{{ x.preco }}</td>
+                        <td>
+                            <a href="" ng-click='adicionaItem(x._id)' class='btn btn-danger'>+</a> 
+                        </td>
+                    </tr>
+                </tbody>                 
+
+            </table>
+        </div>
+    </div>
+</div>

@@ -40,34 +40,74 @@
                 .when("/alterar/:id", {
                     templateUrl: "formAlterar.html",
                     controller: "alterarCtrl"
-                })
+                })               
                 .when("/inserir", {
                     templateUrl: "formAlterar.html",
                     controller: "inserirCtrl"
+                })
+                .when("/listarPedidos/:id", {
+                    templateUrl: "listarPedidos.html",
+                    controller: "listarPedidosCtrl"
+                })
+                .when("/novoPedido/:id", {
+                    templateUrl: "novoPedido.html",
+                    controller: "novoPedidoCtrl"
                 });
             })
 
-            app.controller('listarCtrl', function($scope, $http, $interval) {
+            app.service('clientesService', function($http) {
+                var clientes = [];
+
+                var loadClientes = function(callback) {
+                    $http.get("/clientes")
+                    .then(function success(response) {
+                        clientes = response.data;
+                        callback(clientes);
+                    }, function error(response) {
+                        clientes = [{nome: "Erro"}];
+                    });                   
+                };
+
+                var getClientes = function(){
+                    return clientes;
+                };
+
+                var deleteCliente = function(id){
+                    clientes = clientes.filter((cliente) => cliente._id != id);
+                    return clientes;
+                }
+
+                var getCliente = function(id) {
+                    return clientes.find((cliente) => cliente._id == id);
+                }
+
+                var addCliente = function(cliente) {
+                    clientes.push(cliente);
+                }
+
+                return {
+                    loadClientes: loadClientes,
+                    getClientes: getClientes,
+                    deleteCliente: deleteCliente,
+                    getCliente: getCliente,
+                    addCliente: addCliente
+                };
+
+            });
+
+            app.controller('listarCtrl', function($scope, $http, $interval, clientesService) {
                 
                 //FUNCAO QUE ATUALIZA LISTA
                 $scope.refresh = function() {
-                    $http.get("/clientes")
-                    .then(function success(response) {
-                        $scope.clientes = response.data
-                    }, function error(response) {
-                        $scope.clientes = [{nome: "Erro"}]
-                    });
+                    clientesService.loadClientes(function(clientes) {
+                        $scope.clientes = clientes;
+                    });                 
                 }
-                
+
                 $scope.delete = function(id) {
-                    $http.delete("/clientes/"+id, 
-                                { params: { id: id } })
+                    $http.delete("/clientes/"+id)
                     .then(function success(response) {
-                        alert("chegou")
-                        $scope.clientes = $scope.clientes.filter(
-                            (item) => item.id != id
-                        )
-                        alert($scope.clientes)
+                        $scope.clientes = clientesService.deleteCliente(id);
                     });
                 }
 
@@ -80,32 +120,42 @@
                 
             });
 
-            app.controller('alterarCtrl', function($scope, $http, 
-                                                $routeParams, $location) {
+             app.controller('listarPedidosCtrl', function($scope, $http, $routeParams, clientesService) {
                 
-                //FUNÇÕES PARA CONVERSÃO DE TIPOS                                    
-                $scope.fixTypes = function() {
-                    $scope.cliente.idade = parseInt($scope.cliente.idade)
-                    $scope.cliente.dataNascimento = new Date($scope.cliente.dataNascimento)
-                                                   
+                $scope.cliente = clientesService.getCliente($routeParams.id)
+                
+                //FUNCAO QUE ATUALIZA LISTA
+                $scope.refresh = function() {
+                    $http.get("/clientes/"+$scope.cliente._id+"/pedidos")
+                    .then(function success(response) {
+                        $scope.pedidos = response.data; 
+                    }, function error(response) {
+                        $scope.pedidos = [{nome: "Erro"}];
+                    });                   
                 }
-                $scope.fixDateForBackend = function() {
-                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
-                                                    .toISOString().slice(0,10);
+                               
+                $scope.delete = function(id) {
+                    $http.delete("/clientes/"+$scope.cliente._id+"/pedidos/"+id)
+                    .then(function success(response) {
+                        $scope.pedidos = $scope.pedidos.filter(
+                            (item) => item.id != id
+                        )
+                    });
                 }
+
+                $scope.refresh()
+                
+            });
+
+
+            app.controller('alterarCtrl', function($scope, $http, 
+                                                $routeParams, $location, clientesService) {
               
                 //CARREGA CLIENTE AO ENTRAR NO FORM
-                $http.get("/clientes/"+$routeParams.id)
-                .then(function success(response) {                
-                    $scope.cliente = response.data[0]
-                    $scope.fixTypes();
-                }, function error(response) {
-                    $scope.cliente = {nome: "Erro"}
-                });
+                $scope.clientes = clientesService.getCliente($routeParams.id);
                 
                 //FUNÇÃO DE SUBMETER FORM
                 $scope.submitForm = function() {
-                    $scope.fixDateForBackend()
                     $http.put("/clientes/"+$scope.cliente._id,
                                         $scope.cliente).
                     then(function success(response) {
@@ -114,17 +164,34 @@
                 }
             });
 
-            app.controller('inserirCtrl', function($scope, $http, $location) {
+            app.controller('inserirCtrl', function($scope, $http, $location, clientesService) {
                 
-                $scope.fixDateForBackend = function() {
-                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
-                                                .toISOString().slice(0,10);
-                }
-
                 $scope.submitForm = function() {
-                    $scope.fixDateForBackend()
                     $http.post("/clientes", $scope.cliente).
                     then(function success(response) {
+                        clientesService.addCliente($scope.cliente)
+                        $location.path("/")
+                    });
+                }
+            });
+
+            app.controller('novoPedidoCtrl', function($scope, $http, $location, clientesService) {
+                
+                $scope.clientes = clientesService.getCliente($routeParams.id);
+
+                $scope.loadItems = function () {
+                    $http.get("/itens").
+                    then(function success(response) {
+                        $scope.itens = response.data;
+                    });
+                }
+                
+                $scope.loadItems();
+
+                $scope.submitForm = function() {
+                    $http.post("/clientes", $scope.cliente).
+                    then(function success(response) {
+                        clientesService.addCliente($scope.cliente)
                         $location.path("/")
                     });
                 }
