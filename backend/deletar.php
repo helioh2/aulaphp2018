@@ -1,7 +1,7 @@
 <?php
 
 
-include 'verificaLogin.php';
+// include 'verificaLogin.php';
 include 'conexao.php';
 
 $id = $_GET['id'];

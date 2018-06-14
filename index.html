@@ -84,12 +84,15 @@
                 //FUNÇÕES PARA CONVERSÃO DE TIPOS                                    
                 $scope.fixTypes = function() {
                     $scope.cliente.idade = parseInt($scope.cliente.idade)
-                    $scope.cliente.dataNascimento = new Date($scope.cliente.dataNascimento)
+                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento?
+                                                    new Date($scope.cliente.dataNascimento):
+                                                    undefined;
                                                    
                 }
                 $scope.fixDateForBackend = function() {
-                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
-                                                    .toISOString().slice(0,10);
+                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento? 
+                                                    $scope.cliente.dataNascimento
+                                                        .toISOString().slice(0,10): undefined;
                 }
               
                 //CARREGA CLIENTE AO ENTRAR NO FORM
@@ -115,8 +118,9 @@
             app.controller('inserirCtrl', function($scope, $http, $location) {
                 
                 $scope.fixDateForBackend = function() {
-                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento
-                                                .toISOString().slice(0,10);
+                    $scope.cliente.dataNascimento = $scope.cliente.dataNascimento? 
+                                                    $scope.cliente.dataNascimento
+                                                        .toISOString().slice(0,10): undefined;
                 }
 
                 $scope.submitForm = function() {

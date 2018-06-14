@@ -1,6 +1,6 @@
 <?php
 
-include 'verificaLogin.php';
+// include 'verificaLogin.php';
 include 'conexao.php';
 
 $cliente = json_decode(file_get_contents("php://input"));
