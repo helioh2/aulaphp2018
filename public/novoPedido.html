@@ -7,25 +7,29 @@
         </div>
         <div class="panel panel-body">
             
+            
+
             <table id="tabPedidos" class="table table-condensed table-striped">
                 <label>Busca: <input ng-model="busca.$"></label> <br>
                 <label>Totalmente igual? <input type="checkbox" ng-model="strict"></label><br>
                 <thead class="text-center">
                     <th>Nome do Item</th>
                     <th>Preço unitário</th>
-                    <th><a ng-href="#!novoPedido/{{cliente._id}}" class="btn btn-success">Inserir</a></th>
                 </thead>
                 <tbody>
                     <tr ng-repeat="x in itens | filter:busca:strict">
                         <td>{{ x.nome }}</td>
                         <td>{{ x.preco }}</td>
+                        
                         <td>
-                            <a href="" ng-click='adicionaItem(x._id)' class='btn btn-danger'>+</a> 
+                            <a href="" ng-click='adicionaItem(x._id)' class='btn btn-primary'>+</a> 
                         </td>
                     </tr>
                 </tbody>                 
 
             </table>
+            <br/>Quantidade: <input type="number" ng-model="pedido.quantidade"/><br/>
+            Frete: <input type="number" ng-model="pedido.frete"/> <br/>
         </div>
     </div>
 </div>

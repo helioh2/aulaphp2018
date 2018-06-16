@@ -22,7 +22,6 @@ const clienteSchema = new Schema({
     email: String, 
     endereco: String,
     pedidos: [pedidoSchema]
-    // pedidos: [{type: Schema.ObjectId, ref: 'Pedido'}]
 });
 
 const Item = mongoose.model('Item', itemSchema)

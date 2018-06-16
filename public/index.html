@@ -101,13 +101,14 @@
                 $scope.refresh = function() {
                     clientesService.loadClientes(function(clientes) {
                         $scope.clientes = clientes;
+                        console.log($scope.clientes);
                     });                 
                 }
 
                 $scope.delete = function(id) {
                     $http.delete("/clientes/"+id)
                     .then(function success(response) {
-                        $scope.clientes = clientesService.deleteCliente(id);
+                        $scope.clientes = clientesService.deleteCliente(id);                     
                     });
                 }
 
@@ -119,34 +120,6 @@
                 }, 2000);
                 
             });
-
-             app.controller('listarPedidosCtrl', function($scope, $http, $routeParams, clientesService) {
-                
-                $scope.cliente = clientesService.getCliente($routeParams.id)
-                
-                //FUNCAO QUE ATUALIZA LISTA
-                $scope.refresh = function() {
-                    $http.get("/clientes/"+$scope.cliente._id+"/pedidos")
-                    .then(function success(response) {
-                        $scope.pedidos = response.data; 
-                    }, function error(response) {
-                        $scope.pedidos = [{nome: "Erro"}];
-                    });                   
-                }
-                               
-                $scope.delete = function(id) {
-                    $http.delete("/clientes/"+$scope.cliente._id+"/pedidos/"+id)
-                    .then(function success(response) {
-                        $scope.pedidos = $scope.pedidos.filter(
-                            (item) => item.id != id
-                        )
-                    });
-                }
-
-                $scope.refresh()
-                
-            });
-
 
             app.controller('alterarCtrl', function($scope, $http, 
                                                 $routeParams, $location, clientesService) {
@@ -175,24 +148,54 @@
                 }
             });
 
-            app.controller('novoPedidoCtrl', function($scope, $http, $location, clientesService) {
+            app.controller('listarPedidosCtrl', function($scope, $http, $routeParams, clientesService) {
+            
+                $scope.cliente = clientesService.getCliente($routeParams.id)
                 
-                $scope.clientes = clientesService.getCliente($routeParams.id);
+                //FUNCAO QUE ATUALIZA LISTA
+                $scope.refresh = function() {
+                    $http.get("/clientes/"+$scope.cliente._id+"/pedidos")
+                    .then(function success(response) {
+                        $scope.pedidos = response.data; 
+                        // $scope.cliente.pedidos
+                    }, function error(response) {
+                        $scope.pedidos = [{nome: "Erro"}];
+                    });                   
+                }
+                                
+                $scope.delete = function(id) {
+                    $http.delete("/clientes/"+$scope.cliente._id+"/pedidos/"+id)
+                    .then(function success(response) {
+                        $scope.pedidos = $scope.pedidos.filter(
+                            (pedido) => pedido._id != id
+                        )
+                    });
+                }
+
+                $scope.refresh()
+                
+            });
+
+            app.controller('novoPedidoCtrl', function($scope, $routeParams, $http, $location, clientesService) {
+      
+                $scope.cliente = clientesService.getCliente($routeParams.id);
+                $scope.pedido = {};
 
                 $scope.loadItems = function () {
                     $http.get("/itens").
                     then(function success(response) {
+                        console.log(response.data);
                         $scope.itens = response.data;
                     });
                 }
                 
                 $scope.loadItems();
 
-                $scope.submitForm = function() {
-                    $http.post("/clientes", $scope.cliente).
-                    then(function success(response) {
-                        clientesService.addCliente($scope.cliente)
-                        $location.path("/")
+                $scope.adicionaItem = function(id) {
+                    $scope.pedido.item = id
+                    $http.post("/clientes/"+$scope.cliente._id+"/pedidos", $scope.pedido)
+                    .then(function success(response) {
+                        $location.path("/listarPedidos/"+$scope.cliente._id);
                     });
                 }
             });
