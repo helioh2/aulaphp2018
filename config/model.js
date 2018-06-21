@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-mongoose.connect('mongodb://localhost:27017/clientes')
+mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/clientes");
 
 const itemSchema = new Schema({
     nome: {type: String, required: true},

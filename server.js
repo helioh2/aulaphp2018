@@ -120,6 +120,6 @@ server.delete('/clientes/:idCliente/pedidos/:idPedido', function(req, res) {
 })
 
 
-server.listen(8000, function() {
+server.listen(process.env.PORT || 8000, function() {
     console.log('Executando')
 })

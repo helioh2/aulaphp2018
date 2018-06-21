@@ -13,7 +13,9 @@
     "url": "https://github.com/helioh2/aulaphp2018/issues"
   },
   "homepage": "https://github.com/helioh2/aulaphp2018#readme",
-  "scripts": {},
+  "scripts": {
+    "start": "nodejs server.js"
+  },
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
