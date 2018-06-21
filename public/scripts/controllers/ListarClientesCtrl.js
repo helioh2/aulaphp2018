@@ -19,9 +19,9 @@ angular.module('clientesApp').controller('ListarClientesCtrl',
 
     $scope.refresh()
 
-    //ATUALIZA A CADA 2 SEGUNDOS
-    $interval(function () {
-        $scope.refresh()
-    }, 2000);
+    // //ATUALIZA A CADA 2 SEGUNDOS
+    // $interval(function () {
+    //     $scope.refresh()
+    // }, 2000);
     
 });

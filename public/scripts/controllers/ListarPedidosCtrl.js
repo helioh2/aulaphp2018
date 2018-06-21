@@ -1,5 +1,3 @@
-
-
 angular.module('clientesApp').controller('ListarPedidosCtrl', 
                 function($scope, $http, $routeParams, clientesService) {
             

@@ -53,7 +53,9 @@ server.delete('/clientes/:id', function(req, res) {
 //Itens
 
 server.get('/itens', function(req, res) {
+    console.log("chamou")
     Item.find(function(err, itens){
+        console.log(itens)
         res.send(itens)
     })
 })
