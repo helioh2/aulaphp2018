@@ -14,7 +14,7 @@
   },
   "homepage": "https://github.com/helioh2/aulaphp2018#readme",
   "scripts": {
-    "start": "nodejs server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
